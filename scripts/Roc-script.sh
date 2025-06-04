@@ -55,11 +55,10 @@ git_sparse_clone master https://github.com/linkease/nas-packages network/service
 git_sparse_clone master https://github.com/linkease/nas-packages network/services/webdav2
 
 # iStore
-echo >> feeds.conf.default
-echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
-./scripts/feeds update istore
-./scripts/feeds install -d y -p istore luci-app-store
-
+git clone --depth=1 https://github.com/kenzok8/small-package package/luci-lib-taskd
+git clone --depth=1 https://github.com/kenzok8/small-package package/taskd
+git clone --depth=1 https://github.com/kenzok8/small-package package/luci-lib-xterm
+git clone --depth=1 https://github.com/kenzok8/small-package package/luci-app-store
 
 # Go & AList & AdGuardHome & AriaNg & WolPlus & Lucky & OpenAppFilter & 集客无线AC控制器 & 雅典娜LED控制
 git clone --depth=1 https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
