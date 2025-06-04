@@ -34,13 +34,6 @@ git clone --depth=1 https://github.com/Jason6111/luci-app-netdata package/luci-a
 git_sparse_clone main https://github.com/Lienol/openwrt-package luci-app-filebrowser luci-app-ssr-mudb-server
 git_sparse_clone openwrt-18.06 https://github.com/immortalwrt/luci applications/luci-app-eqos
 
-# 科学上网插件
-git clone --depth=1 -b main https://github.com/fw876/helloworld package/luci-app-ssr-plus
-#git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages package/openwrt-passwall
-#git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
-#git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall2 package/luci-app-passwall2
-git_sparse_clone master https://github.com/vernesong/OpenClash luci-app-openclash
-
 # SmartDNS
 git clone --depth=1 -b lede https://github.com/pymumu/luci-app-smartdns package/luci-app-smartdns
 git clone --depth=1 https://github.com/pymumu/openwrt-smartdns package/smartdns
@@ -62,8 +55,9 @@ git_sparse_clone master https://github.com/linkease/nas-packages network/service
 git_sparse_clone master https://github.com/linkease/nas-packages network/services/webdav2
 
 # iStore
-git_sparse_clone main https://github.com/linkease/istore-ui app-store-ui
-git_sparse_clone main https://github.com/linkease/istore luci
+echo >> feeds.conf.default
+echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
+
 
 # Go & AList & AdGuardHome & AriaNg & WolPlus & Lucky & OpenAppFilter & 集客无线AC控制器 & 雅典娜LED控制
 git clone --depth=1 https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
