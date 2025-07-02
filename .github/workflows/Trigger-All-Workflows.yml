@@ -10,6 +10,9 @@ jobs:
     IPQ60XX-LibWrt:
       uses: ./.github/workflows/IPQ60XX-LibWrt.yml
 
+    IPQ807X-LibWrt:
+      uses: ./.github/workflows/IPQ807X-LibWrt.yml
+
     Arthur-Athena-ImmortalWrt:
       uses: ./.github/workflows/Arthur&Athena-ImmortalWrt.yml
  
