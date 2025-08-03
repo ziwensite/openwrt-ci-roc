@@ -1,4 +1,4 @@
-name: RAX3000M-ImmortalWrt
+name: K2P-ImmortalWrt
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 env:
   REPO_URL: https://github.com/immortalwrt/immortalwrt.git
   REPO_BRANCH: openwrt-23.05
-  CONFIG_FILE: configs/RAX3000M.config
+  CONFIG_FILE: configs/K2P.config
   DIY_SCRIPT: scripts/Roc-script.sh
   CLASH_KERNEL: amd64
   MADS: false
@@ -154,10 +154,10 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd $OPENWRT_PATH/bin/targets/*/*
-        cp $OPENWRT_PATH/.config RAX3000M.config
-        mv config.buildinfo RAX3000M.config.buildinfo
+        cp $OPENWRT_PATH/.config K2P.config
+        mv config.buildinfo K2P.config.buildinfo
         mv -f $OPENWRT_PATH/bin/packages/*/*/*.ipk packages
-        tar -zcf RAX3000M.Packages.tar.gz packages
+        tar -zcf K2P.Packages.tar.gz packages
         rm -rf packages feeds.buildinfo version.buildinfo sha256sums profiles.json
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
 
