@@ -29,6 +29,11 @@ function git_sparse_clone() {
   cd .. && rm -rf $repodir
 }
 
+# Unishare
+git_sparse_clone main https://github.com/linkease/nas-packages-luci luci/luci-app-unishare
+git_sparse_clone master https://github.com/linkease/nas-packages network/services/unishare
+git_sparse_clone master https://github.com/linkease/nas-packages network/services/webdav2
+
 # Go & OpenList & ariang & frp & AdGuardHome & WolPlus & Lucky & OpenAppFilter & 集客无线AC控制器 & 雅典娜LED控制
 git clone --depth=1 https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
 git clone --depth=1 https://github.com/sbwml/luci-app-openlist2 package/openlist
