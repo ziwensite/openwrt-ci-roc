@@ -10,6 +10,7 @@ sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ Built by Roc')/g" feeds/luci/modu
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 
 # 移除要替换的包
+rm -rf feeds/luci/applications/luci-app-wechatpush
 rm -rf feeds/luci/applications/luci-app-appfilter
 rm -rf feeds/luci/applications/luci-app-frpc
 rm -rf feeds/luci/applications/luci-app-frps
@@ -29,7 +30,7 @@ function git_sparse_clone() {
   cd .. && rm -rf $repodir
 }
 
-# Go & OpenList & ariang & frp & AdGuardHome & WolPlus & Lucky & OpenAppFilter & 集客无线AC控制器 & 雅典娜LED控制
+# Go & OpenList & ariang & frp & AdGuardHome & WolPlus & Lucky & wechatpush & OpenAppFilter & 集客无线AC控制器 & 雅典娜LED控制
 git clone --depth=1 https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
 git clone --depth=1 https://github.com/sbwml/luci-app-openlist2 package/openlist
 git_sparse_clone ariang https://github.com/laipeng668/packages net/ariang
@@ -41,6 +42,7 @@ mv -f package/luci-app-frps feeds/luci/applications/luci-app-frps
 git_sparse_clone master https://github.com/kenzok8/openwrt-packages adguardhome luci-app-adguardhome
 git_sparse_clone main https://github.com/VIKINGYFY/packages luci-app-wolplus
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
+git clone --depth=1 https://github.com/tty228/luci-app-wechatpush package/luci-app-wechatpush
 git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 git clone --depth=1 https://github.com/lwb1978/openwrt-gecoosac package/openwrt-gecoosac
 git clone --depth=1 https://github.com/NONGFAH/luci-app-athena-led package/luci-app-athena-led
