@@ -24,6 +24,3 @@ jobs:
 
     K2P-ImmortalWrt:
       uses: ./.github/workflows/K2P-ImmortalWrt.yml
-
-    All-Clean:
-      uses: ./.github/workflows/All-Clean.yml
