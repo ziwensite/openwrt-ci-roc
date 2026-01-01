@@ -10,7 +10,7 @@ env:
   REPO_URL: https://github.com/laipeng668/openwrt-6.x.git
   REPO_BRANCH: main-nss
   CONFIG_FILE: configs/IPQ60XX.config
-  GENERAL_CONFIG_FILE: configs/General.config
+  GENERAL_CONFIG_FILE: configs/General_diy.config
   DIY_SCRIPT: scripts/Roc-script.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
