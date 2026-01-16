@@ -72,6 +72,20 @@ git clone --depth=1 https://github.com/lwb1978/openwrt-gecoosac package/openwrt-
 git clone --depth=1 https://github.com/NONGFAH/luci-app-athena-led package/luci-app-athena-led
 chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led package/luci-app-athena-led/root/usr/sbin/athena-led
 
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-adguardhome package/luci-app-adguardhome
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-easytie package/luci-app-easytie
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-mosdns package/luci-app-mosdns
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-oaf package/luci-app-oaf
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-quickfile package/luci-app-quickfile
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-store package/luci-app-store
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-unishare package/luci-app-unishare
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-cifs package/luci-app-cifs
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-filebrowser-go package/luci-app-filebrowser-go
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-homeproxy package/luci-app-homeproxy
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-v2raya package/luci-app-v2raya
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-syncthing package/luci-app-syncthing
+git clone --depth=1 https://github.com/kiddin9/kwrt-packages/tree/main/luci-app-partexp package/luci-app-partexp
+
 ### PassWall & OpenClash ###
 
 # 移除 OpenWrt Feeds 自带的核心库
