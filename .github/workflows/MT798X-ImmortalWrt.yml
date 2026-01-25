@@ -113,7 +113,7 @@ jobs:
         # 修改配置文件
         sed -i '/CONFIG_PACKAGE_sqm-scripts-nss=y/d' .config
         sed -i '/CONFIG_PACKAGE_luci-app-cpufreq=y/d' .config
-        sed -i '/# CONFIG_TARGET_ROOTFS_INITRAMFS is not set/d' .config
+        # sed -i '/# CONFIG_TARGET_ROOTFS_INITRAMFS is not set/d' .config
         # sed -i "/uci.set('dhcp', section_id, 'leasetime', '12h');/a\    uci.set('dhcp', section_id, 'dhcpv4', 'server');" \
         #        feeds/luci/modules/luci-mod-network/htdocs/luci-static/resources/view/network/interfaces.js
         make defconfig
