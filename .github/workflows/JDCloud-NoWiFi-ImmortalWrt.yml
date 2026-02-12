@@ -1,4 +1,4 @@
-name: MT798X-ImmortalWrt
+name: JDCloud-NoWiFi-ImmortalWrt
 
 on:
   workflow_dispatch:
@@ -7,15 +7,15 @@ on:
   #   - cron: 0 20 * * *
 
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt.git
+  REPO_URL: https://github.com/laipeng668/immortalwrt.git
   REPO_BRANCH: openwrt-25.12
-  CONFIG_FILE: configs/MT798X.config
+  CONFIG_FILE: configs/JDCloud.NoWiFi.config
   GENERAL_CONFIG_FILE: configs/General.config
   DIY_SCRIPT: scripts/Roc-script.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   FIRMWARE_RELEASE: true
-  FIRMWARE_TAG: MT798X
+  FIRMWARE_TAG: JDCloud
   TZ: Asia/Shanghai
 
 jobs:
@@ -109,12 +109,6 @@ jobs:
       run: |
         cat $CONFIG_FILE $GENERAL_CONFIG_FILE > $OPENWRT_PATH/.config
         cd $OPENWRT_PATH
-        # 修改配置文件
-        sed -i '/CONFIG_PACKAGE_sqm-scripts-nss=y/d' .config
-        sed -i '/CONFIG_PACKAGE_luci-app-cpufreq=y/d' .config
-        # sed -i '/# CONFIG_TARGET_ROOTFS_INITRAMFS is not set/d' .config
-        # sed -i "/uci.set('dhcp', section_id, 'leasetime', '12h');/a\    uci.set('dhcp', section_id, 'dhcpv4', 'server');" \
-        #        feeds/luci/modules/luci-mod-network/htdocs/luci-static/resources/view/network/interfaces.js
         make defconfig
         make download -j$(nproc)
 
@@ -143,11 +137,14 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd $OPENWRT_PATH/bin/targets/*/*
-        cp $OPENWRT_PATH/.config MT798X.config
-        mv config.buildinfo MT798X.config.buildinfo
-        mv immortalwrt-mediatek-filogic.manifest MT798X.manifest
+        cp $OPENWRT_PATH/.config Arthur.Athena.Taiyi.NoWiFi.config
+        mv config.buildinfo Arthur.Athena.Taiyi.NoWiFi.config.buildinfo
+        mv immortalwrt-qualcommax-ipq60xx.manifest Arthur.Athena.Taiyi.NoWiFi.manifest
         mv -f $OPENWRT_PATH/bin/packages/*/*/*.apk packages
-        tar -zcf MT798X.Packages.tar.gz packages
+        tar -zcf Arthur.Athena.Taiyi.NoWiFi.Packages.tar.gz packages
+        for file in *qualcommax*.bin; do
+            mv "$file" "${file//qualcommax/nowifi}"
+        done
         rm -rf packages feeds.buildinfo version.buildinfo sha256sums profiles.json
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
 
@@ -170,7 +167,7 @@ jobs:
         body: |
           **This is OpenWrt Firmware for ${{ env.FIRMWARE_TAG }}**
           ### 📒 固件信息
-          - 这是基于ImmortalWrt的openwrt-25.12分支制作的个人定制固件，默认主题为Aurora；该固件在ImmortalWrt的基础上，添加了额外的软件包ddns、ttyd、upnp、wolplus、samba4、vlmcsd、aria2、autoreboot、uhttpd、wifischedule、frps、frpc、diskman、hd-idle、banip、acme、arpbind、usb-printer、passwall、oaf、sqm、wireguard、watchcat、wechatpush、3cat、smartdns，并添加了若干工具，具体详见MT798X.config和General.config。
+          - 这是开启全功能NSS的6.12内核固件，默认主题为Aurora；该固件在ImmortalWrt的基础上，添加了额外的软件包cpufreq、ddns、ttyd、upnp、wolplus、samba4、vlmcsd、aria2、autoreboot、uhttpd、wifischedule、frps、frpc、diskman、hd-idle、banip、acme、arpbind、usb-printer、passwall、openlist、oaf、sqm、wireguard、watchcat、wechatpush、3cat、smartdns（**Taiyi**额外增加了dockerman、gecoosac、lucky），并添加了若干工具，具体详见JDCloud.config(NoWiFi.config)和General.config。
           - 💻 这是 ${{ env.FIRMWARE_TAG }} 平台使用的 OpenWrt 固件
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
@@ -193,3 +190,10 @@ jobs:
         echo "staging: $(du -sh $OPENWRT_PATH/staging_dir | cut -f 1)"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Delete Old Workflows(删除旧工作流)
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        retain_days: 2
+        keep_minimum_runs: 0
