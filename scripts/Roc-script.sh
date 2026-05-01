@@ -147,6 +147,7 @@ git clone --depth=1 https://github.com/kenzok8/small-package.git small-package
 [ -d small-package/net/verysync ] && mv -f small-package/net/verysync feeds/packages/net/verysync
 
 # Syncthing 文件同步
+rm -rf feeds/luci/applications/luci-app-syncthing 2>/dev/null || true
 [ -d small-package/luci-app-syncthing ] && mv -f small-package/luci-app-syncthing feeds/luci/applications/
 
 rm -rf small-package
