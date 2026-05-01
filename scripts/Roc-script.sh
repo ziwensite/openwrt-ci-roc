@@ -18,10 +18,10 @@ sed -i "s#_('Firmware Version'), (L\.isObject(boardinfo\.release) ? boardinfo\.r
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x01000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x02000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x04000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
-# sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
+sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 
 # 调节IPQ60XX的1.5GHz频率电压(从0.9375V提高到0.95V，过低可能导致不稳定，过高可能增加功耗和发热，具体数值需要根据实际情况调整)
-# sed -i 's/opp-microvolt = <937500>;/opp-microvolt = <950000>;/' target/linux/qualcommax/patches-6.12/0038-v6.16-arm64-dts-qcom-ipq6018-add-1.5GHz-CPU-Frequency.patch
+sed -i 's/opp-microvolt = <937500>;/opp-microvolt = <950000>;/' target/linux/qualcommax/patches-6.12/0038-v6.16-arm64-dts-qcom-ipq6018-add-1.5GHz-CPU-Frequency.patch
 
 # 移除要替换的包
 rm -rf feeds/luci/applications/luci-app-argon-config
@@ -65,6 +65,63 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAp
 git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci-app-gecoosac
 git clone --depth=1 https://github.com/NONGFAH/luci-app-athena-led package/luci-app-athena-led
 chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led package/luci-app-athena-led/root/usr/sbin/athena-led
+
+### iStore 应用商店 ###
+git clone --depth=1 https://github.com/linkease/istore.git package/istore
+mv -f package/istore/luci/luci-app-store feeds/luci/applications/luci-app-store
+mv -f package/istore/luci/luci-app-unishare feeds/luci/applications/luci-app-unishare
+mv -f package/istore/app-store-ui feeds/packages/net/app-store-ui
+mv -f package/istore/app-unishare feeds/packages/net/unishare
+
+### Dockerman 容器管理 ###
+git_sparse_clone dockerman https://github.com/kenzok8/small-package luci-app-dockerman
+mv -f package/luci-app-dockerman/luci-app-dockerman feeds/luci/applications/luci-app-dockerman
+rm -rf package/luci-app-dockerman
+
+### EasyTier 网络工具 ###
+git_sparse_clone easytier https://github.com/kenzok8/small-package luci-app-easytier
+mv -f package/luci-app-easytier/luci-app-easytier feeds/luci/applications/luci-app-easytier
+rm -rf package/luci-app-easytier
+
+### PartExp 潘多拉插件 ###
+git_sparse_clone partexp https://github.com/kenzok8/small-package luci-app-partexp
+mv -f package/luci-app-partexp/luci-app-partexp feeds/luci/applications/luci-app-partexp
+rm -rf package/luci-app-partexp
+
+### AdGuard Home 广告过滤 ###
+git clone --depth=1 https://github.com/rufengsuixing/luci-app-adguardhome.git package/luci-app-adguardhome
+
+### Cloudflared Tunnel ###
+git_sparse_clone cloudflared https://github.com/kenzok8/small-package luci-app-cloudflared
+mv -f package/luci-app-cloudflared/luci-app-cloudflared feeds/luci/applications/luci-app-cloudflared
+rm -rf package/luci-app-cloudflared
+
+### Tailscale VPN ###
+git_sparse_clone tailscale https://github.com/kenzok8/small-package luci-app-tailscale
+mv -f package/luci-app-tailscale/luci-app-tailscale feeds/luci/applications/luci-app-tailscale
+rm -rf package/luci-app-tailscale
+
+### CIFS 网络共享挂载 ###
+git clone --depth=1 https://github.com/openwrt-develop/luci-app-cifs.git package/luci-app-cifs
+mv -f package/luci-app-cifs/luci-app-cifs-mount feeds/luci/applications/luci-app-cifs-mount
+rm -rf package/luci-app-cifs
+
+### Quickfile 文件管理 ###
+git clone --depth=1 https://github.com/sbwml/luci-app-quickfile.git package/luci-app-quickfile
+mv -f package/luci-app-quickfile/luci-app-quickfile feeds/luci/applications/luci-app-quickfile
+rm -rf package/luci-app-quickfile
+
+### Verysync 微力同步 ###
+git_sparse_clone verysync https://github.com/kenzok8/openwrt-packages net/verysync
+mv -f package/verysync feeds/packages/net/verysync
+git clone --depth=1 https://github.com/coolsnowwolf/luci.git package/luci-verysync
+mv -f package/luci-verysync/applications/luci-app-verysync feeds/luci/applications/luci-app-verysync
+rm -rf package/luci-verysync
+
+### Syncthing 文件同步 ###
+git_sparse_clone syncthing https://github.com/kenzok8/small-package luci-app-syncthing
+mv -f package/luci-app-syncthing/root feeds/luci/applications/luci-app-syncthing
+rm -rf package/luci-app-syncthing
 
 ### PassWall & OpenClash ###
 
