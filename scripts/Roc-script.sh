@@ -72,12 +72,7 @@ git clone --depth=1 -b frp-binary --single-branch https://github.com/laipeng668/
 [ -d package/frp/net/frp ] && mv -f package/frp/net/frp feeds/packages/net/
 rm -rf package/frp
 
-# frpc & frps
-rm -rf package/luci-app-frpc package/luci-app-frps 2>/dev/null || true
-git clone --depth=1 -b master --single-branch https://github.com/luci/luci package/luci-frp
-[ -d package/luci-frp/applications/luci-app-frpc ] && mv -f package/luci-frp/applications/luci-app-frpc feeds/luci/applications/
-[ -d package/luci-frp/applications/luci-app-frps ] && mv -f package/luci-frp/applications/luci-app-frps feeds/luci/applications/
-rm -rf package/luci-frp
+# frpc & frps - 已由 feeds update -a 自动安装，跳过独立克隆
 
 # Argon 主题
 rm -rf feeds/luci/themes/luci-theme-argon 2>/dev/null || true
@@ -206,7 +201,7 @@ git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall2.git pa
 git clone --depth=1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
 
 # 清理 PassWall 的 chnlist 规则文件
-[ -f package/luci-app-passwall/luci-app-passwall/root/usr/share/passwall/rules/chnlist ] && echo "baidu.com" > package/luci-app-passwall/luci-app-passwall/root/usr/share/passwall/rules/chnlist
+[ -f package/luci-app-passwall/root/usr/share/passwall/rules/chnlist ] && echo "baidu.com" > package/luci-app-passwall/root/usr/share/passwall/rules/chnlist
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
