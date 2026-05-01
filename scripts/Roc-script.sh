@@ -165,6 +165,12 @@ git clone --depth=1 https://github.com/openwrt-develop/luci-app-cifs.git package
 rm -rf package/luci-app-cifs
 
 ### Quickfile 文件管理 ###
+# 获取 quickfile 核心包
+rm -rf package/quickfile 2>/dev/null || true
+git clone --depth=1 -b quickfile https://github.com/sbwml/packages.git package/quickfile
+[ -d package/quickfile/net/quickfile ] && mv -f package/quickfile/net/quickfile feeds/packages/net/
+rm -rf package/quickfile
+# 获取 luci-app-quickfile
 rm -rf package/luci-app-quickfile 2>/dev/null || true
 git clone --depth=1 https://github.com/sbwml/luci-app-quickfile.git package/luci-app-quickfile
 [ -d package/luci-app-quickfile/luci-app-quickfile ] && mv -f package/luci-app-quickfile/luci-app-quickfile feeds/luci/applications/
