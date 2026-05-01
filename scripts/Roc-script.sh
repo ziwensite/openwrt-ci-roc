@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 # 修改默认IP & 固件名称 & 编译署名和时间
 sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
 sed -i "s/hostname='.*'/hostname='Roc'/g" package/base-files/files/bin/config_generate
@@ -11,140 +14,211 @@ sed -i "s#_('Firmware Version'), (L\.isObject(boardinfo\.release) ? boardinfo\.r
                 href: 'https://github.com/laipeng668/openwrt-ci-roc/releases',\n \
                 target: '_blank',\n \
                 rel: 'noopener noreferrer'\n \
-                }, [ 'Built by Roc $(date "+%Y-%m-%d %H:%M:%S")' ])\n \
+                }, [ 'Built by Roc \$(date "+%Y-%m-%d %H:%M:%S")' ])\n \
             ]),#" feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
 
 # 调整NSS驱动q6_region内存区域预留大小（ipq6018.dtsi默认预留85MB，ipq6018-512m.dtsi默认预留55MB，带WiFi必须至少预留54MB，以下分别是改成预留16MB、32MB、64MB和96MB）
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x01000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x02000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x04000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
-sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
-sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+# sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
+# 调整NSS驱动q6_region内存区域预留大小（仅修改512m版本，1G设备不需要修改）
+if [ -f target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi ]; then
+  sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x06000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
+fi
 
 # 调节IPQ60XX的1.5GHz频率电压(从0.9375V提高到0.95V，过低可能导致不稳定，过高可能增加功耗和发热，具体数值需要根据实际情况调整)
-sed -i 's/opp-microvolt = <937500>;/opp-microvolt = <950000>;/' target/linux/qualcommax/patches-6.12/0038-v6.16-arm64-dts-qcom-ipq6018-add-1.5GHz-CPU-Frequency.patch
+# sed -i 's/opp-microvolt = <937500>;/opp-microvolt = <950000>;/' target/linux/qualcommax/patches-6.12/0038-v6.16-arm64-dts-qcom-ipq6018-add-1.5GHz-CPU-Frequency.patch
+# 调节IPQ60XX的1.5GHz频率电压
+if [ -f target/linux/qualcommax/patches-6.12/0038-v6.16-arm64-dts-qcom-ipq6018-add-1.5GHz-CPU-Frequency.patch ]; then
+  sed -i 's/opp-microvolt = <937500>;/opp-microvolt = <950000>;/' target/linux/qualcommax/patches-6.12/0038-v6.16-arm64-dts-qcom-ipq6018-add-1.5GHz-CPU-Frequency.patch
+fi
 
 # 移除要替换的包
-rm -rf feeds/luci/applications/luci-app-argon-config
-rm -rf feeds/luci/applications/luci-app-wechatpush
-rm -rf feeds/luci/applications/luci-app-appfilter
-rm -rf feeds/luci/applications/luci-app-frpc
-rm -rf feeds/luci/applications/luci-app-frps
-rm -rf feeds/luci/themes/luci-theme-argon
-rm -rf feeds/packages/net/open-app-filter
-rm -rf feeds/packages/net/ariang
-rm -rf feeds/packages/net/frp
-rm -rf feeds/packages/lang/golang
+rm -rf feeds/luci/applications/luci-app-argon-config 2>/dev/null || true
+rm -rf feeds/luci/applications/luci-app-wechatpush 2>/dev/null || true
+rm -rf feeds/luci/applications/luci-app-appfilter 2>/dev/null || true
+rm -rf feeds/luci/applications/luci-app-frpc 2>/dev/null || true
+rm -rf feeds/luci/applications/luci-app-frps 2>/dev/null || true
+rm -rf feeds/luci/themes/luci-theme-argon 2>/dev/null || true
+rm -rf feeds/packages/net/open-app-filter 2>/dev/null || true
+rm -rf feeds/packages/net/ariang 2>/dev/null || true
+rm -rf feeds/packages/net/frp 2>/dev/null || true
+rm -rf feeds/packages/lang/golang 2>/dev/null || true
 
-# Git稀疏克隆函数
+# Git稀疏克隆函数 - 修复版
 git_sparse_clone() {
   local branch="$1"
   local repourl="$2"
   shift 2
   local repodir=$(basename "$repourl" .git)
+  rm -rf "$repodir" 2>/dev/null || true
   git clone --depth=1 -b "$branch" --single-branch --filter=blob:none --sparse "$repourl" "$repodir"
   cd "$repodir" && git sparse-checkout set "$@"
-  cd .. && mv -f "$repodir"/$@ package/ 2>/dev/null || mv -f "$@" package/ 2>/dev/null; rm -rf "$repodir"
+  cd ..
+  for item in "$@"; do
+    [ -d "$repodir/$item" ] && mv -f "$repodir/$item" package/
+  done
+  rm -rf "$repodir"
   cd ..
 }
 
-# ariang & Go & frp & Argon & Aurora & OpenList & Lucky & wechatpush & OpenAppFilter & 雅典娜LED控制
-git_sparse_clone ariang https://github.com/laipeng668/packages net/ariang
-git_sparse_clone master https://github.com/laipeng668/packages lang/golang
-mv -f package/golang feeds/packages/lang/golang
-git_sparse_clone frp-binary https://github.com/laipeng668/packages net/frp
-mv -f package/frp feeds/packages/net/frp
-git_sparse_clone frp https://github.com/luci/luci applications/luci-app-frpc applications/luci-app-frps
-mv -f package/luci-app-frpc feeds/luci/applications/luci-app-frpc
-mv -f package/luci-app-frps feeds/luci/applications/luci-app-frps
+# 创建必要的目录
+mkdir -p package feeds/luci/applications feeds/luci/themes feeds/packages/net feeds/packages/lang
+
+# ariang
+rm -rf package/ariang 2>/dev/null || true
+git clone --depth=1 -b ariang --single-branch https://github.com/laipeng668/packages package/ariang
+[ -d package/ariang/net/ariang ] && mv -f package/ariang/net/ariang feeds/packages/net/
+rm -rf package/ariang
+
+# golang
+rm -rf package/golang 2>/dev/null || true
+git clone --depth=1 -b master --single-branch https://github.com/laipeng668/packages package/golang
+[ -d package/golang/lang/golang ] && mv -f package/golang/lang/golang feeds/packages/lang/
+rm -rf package/golang
+
+# frp
+rm -rf package/frp 2>/dev/null || true
+git clone --depth=1 -b frp-binary --single-branch https://github.com/laipeng668/packages package/frp
+[ -d package/frp/net/frp ] && mv -f package/frp/net/frp feeds/packages/net/
+rm -rf package/frp
+
+# frpc & frps
+rm -rf package/luci-app-frpc package/luci-app-frps 2>/dev/null || true
+git clone --depth=1 -b master --single-branch https://github.com/luci/luci package/luci-frp
+[ -d package/luci-frp/applications/luci-app-frpc ] && mv -f package/luci-frp/applications/luci-app-frpc feeds/luci/applications/
+[ -d package/luci-frp/applications/luci-app-frps ] && mv -f package/luci-frp/applications/luci-app-frps feeds/luci/applications/
+rm -rf package/luci-frp
+
+# Argon 主题
+rm -rf feeds/luci/themes/luci-theme-argon 2>/dev/null || true
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon feeds/luci/themes/luci-theme-argon
+rm -rf feeds/luci/applications/luci-app-argon-config 2>/dev/null || true
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config feeds/luci/applications/luci-app-argon-config
+
+# Aurora 主题
+rm -rf feeds/luci/themes/luci-theme-aurora 2>/dev/null || true
 git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora feeds/luci/themes/luci-theme-aurora
+rm -rf feeds/luci/applications/luci-app-aurora-config 2>/dev/null || true
 git clone --depth=1 https://github.com/eamonxg/luci-app-aurora-config feeds/luci/applications/luci-app-aurora-config
+
+# OpenList2
+rm -rf package/openlist2 2>/dev/null || true
 git clone --depth=1 https://github.com/sbwml/luci-app-openlist2 package/openlist2
+
+# Lucky
+rm -rf package/luci-app-lucky 2>/dev/null || true
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
+
+# Wechatpush
+rm -rf package/luci-app-wechatpush 2>/dev/null || true
 git clone --depth=1 https://github.com/tty228/luci-app-wechatpush package/luci-app-wechatpush
+
+# OpenAppFilter
+rm -rf package/OpenAppFilter 2>/dev/null || true
 git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
+
+# Gecoosac
+rm -rf package/luci-app-gecoosac 2>/dev/null || true
 git clone --depth=1 https://github.com/laipeng668/luci-app-gecoosac package/luci-app-gecoosac
+
+# Athena LED
+rm -rf package/luci-app-athena-led 2>/dev/null || true
 git clone --depth=1 https://github.com/NONGFAH/luci-app-athena-led package/luci-app-athena-led
-chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led package/luci-app-athena-led/root/usr/sbin/athena-led
+chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led 2>/dev/null || true
+chmod +x package/luci-app-athena-led/root/usr/sbin/athena-led 2>/dev/null || true
 
 ### iStore 应用商店 ###
+rm -rf package/istore 2>/dev/null || true
 git clone --depth=1 https://github.com/linkease/istore.git package/istore
-mv -f package/istore/luci/applications/luci-app-store feeds/luci/applications/luci-app-store
-mv -f package/istore/luci/applications/luci-app-unishare feeds/luci/applications/luci-app-unishare
-mv -f package/istore/ui feeds/packages/net/app-store-ui
-mv -f package/istore/app-unishare feeds/packages/net/unishare
+[ -d package/istore/luci/applications/luci-app-store ] && mv -f package/istore/luci/applications/luci-app-store feeds/luci/applications/
+[ -d package/istore/luci/applications/luci-app-unishare ] && mv -f package/istore/luci/applications/luci-app-unishare feeds/luci/applications/
+[ -d package/istore/ui ] && mv -f package/istore/ui feeds/packages/net/app-store-ui
+[ -d package/istore/app-unishare ] && mv -f package/istore/app-unishare feeds/packages/net/unishare
 rm -rf package/istore
 
 ### Dockerman 容器管理 ###
-git_sparse_clone main https://github.com/kenzok8/small-package luci-app-dockerman
-mv -f package/luci-app-dockerman/luci-app-dockerman feeds/luci/applications/luci-app-dockerman
+rm -rf package/luci-app-dockerman 2>/dev/null || true
+git clone --depth=1 https://github.com/kenzok8/luci-app-dockerman.git package/luci-app-dockerman
+[ -d package/luci-app-dockerman/luci-app-dockerman ] && mv -f package/luci-app-dockerman/luci-app-dockerman feeds/luci/applications/
 rm -rf package/luci-app-dockerman
 
 ### EasyTier 网络工具 ###
+rm -rf package/luci-app-easytier 2>/dev/null || true
 git clone --depth=1 https://github.com/kenzok8/luci-app-easytier.git package/luci-app-easytier
-mv -f package/luci-app-easytier/luci-app-easytier feeds/luci/applications/luci-app-easytier
+[ -d package/luci-app-easytier/luci-app-easytier ] && mv -f package/luci-app-easytier/luci-app-easytier feeds/luci/applications/
 rm -rf package/luci-app-easytier
 
 ### PartExp 潘多拉插件 ###
+rm -rf package/luci-app-partexp 2>/dev/null || true
 git clone --depth=1 https://github.com/kenzok8/luci-app-partexp.git package/luci-app-partexp
-mv -f package/luci-app-partexp/luci-app-partexp feeds/luci/applications/luci-app-partexp
+[ -d package/luci-app-partexp/luci-app-partexp ] && mv -f package/luci-app-partexp/luci-app-partexp feeds/luci/applications/
 rm -rf package/luci-app-partexp
 
 ### AdGuard Home 广告过滤 ###
+rm -rf package/luci-app-adguardhome 2>/dev/null || true
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-adguardhome.git package/luci-app-adguardhome
-mv -f package/luci-app-adguardhome/luci-app-adguardhome feeds/luci/applications/luci-app-adguardhome
+[ -d package/luci-app-adguardhome/luci-app-adguardhome ] && mv -f package/luci-app-adguardhome/luci-app-adguardhome feeds/luci/applications/
 rm -rf package/luci-app-adguardhome
 
 ### Cloudflared Tunnel ###
+rm -rf package/luci-app-cloudflared 2>/dev/null || true
 git clone --depth=1 https://github.com/kenzok8/luci-app-cloudflared.git package/luci-app-cloudflared
-mv -f package/luci-app-cloudflared/luci-app-cloudflared feeds/luci/applications/luci-app-cloudflared
+[ -d package/luci-app-cloudflared/luci-app-cloudflared ] && mv -f package/luci-app-cloudflared/luci-app-cloudflared feeds/luci/applications/
 rm -rf package/luci-app-cloudflared
 
 ### Tailscale VPN ###
+rm -rf package/luci-app-tailscale 2>/dev/null || true
 git clone --depth=1 https://github.com/kenzok8/luci-app-tailscale.git package/luci-app-tailscale
-mv -f package/luci-app-tailscale/luci-app-tailscale feeds/luci/applications/luci-app-tailscale
+[ -d package/luci-app-tailscale/luci-app-tailscale ] && mv -f package/luci-app-tailscale/luci-app-tailscale feeds/luci/applications/
 rm -rf package/luci-app-tailscale
 
 ### CIFS 网络共享挂载 ###
+rm -rf package/luci-app-cifs 2>/dev/null || true
 git clone --depth=1 https://github.com/openwrt-develop/luci-app-cifs.git package/luci-app-cifs
-mv -f package/luci-app-cifs/luci-app-cifs-mount feeds/luci/applications/luci-app-cifs-mount
+[ -d package/luci-app-cifs/luci-app-cifs-mount ] && mv -f package/luci-app-cifs/luci-app-cifs-mount feeds/luci/applications/
 rm -rf package/luci-app-cifs
 
 ### Quickfile 文件管理 ###
+rm -rf package/luci-app-quickfile 2>/dev/null || true
 git clone --depth=1 https://github.com/sbwml/luci-app-quickfile.git package/luci-app-quickfile
-mv -f package/luci-app-quickfile/luci-app-quickfile feeds/luci/applications/luci-app-quickfile
+[ -d package/luci-app-quickfile/luci-app-quickfile ] && mv -f package/luci-app-quickfile/luci-app-quickfile feeds/luci/applications/
 rm -rf package/luci-app-quickfile
 
 ### Verysync 微力同步 ###
+rm -rf package/verysync 2>/dev/null || true
 git clone --depth=1 https://github.com/kenzok8/verysync.git package/verysync
-mv -f package/verysync feeds/packages/net/verysync
+[ -d package/verysync ] && mv -f package/verysync feeds/packages/net/verysync
+rm -rf package/luci-verysync 2>/dev/null || true
 git clone --depth=1 https://github.com/coolsnowwolf/luci.git package/luci-verysync
-mv -f package/luci-verysync/applications/luci-app-verysync feeds/luci/applications/luci-app-verysync
+[ -d package/luci-verysync/applications/luci-app-verysync ] && mv -f package/luci-verysync/applications/luci-app-verysync feeds/luci/applications/
 rm -rf package/luci-verysync
 
 ### Syncthing 文件同步 ###
+rm -rf package/luci-app-syncthing 2>/dev/null || true
 git clone --depth=1 https://github.com/kenzok8/luci-app-syncthing.git package/luci-app-syncthing
-mv -f package/luci-app-syncthing/root feeds/luci/applications/luci-app-syncthing
+[ -d package/luci-app-syncthing/root ] && mv -f package/luci-app-syncthing/root feeds/luci/applications/luci-app-syncthing
 rm -rf package/luci-app-syncthing
 
 ### PassWall & OpenClash ###
 
 # 移除 OpenWrt Feeds 自带的核心库
-rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
+rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls} 2>/dev/null || true
 
 # 移除 OpenWrt Feeds 过时的LuCI版本
-rm -rf feeds/luci/applications/luci-app-passwall
-rm -rf feeds/luci/applications/luci-app-openclash
+rm -rf feeds/luci/applications/luci-app-passwall 2>/dev/null || true
+rm -rf feeds/luci/applications/luci-app-openclash 2>/dev/null || true
 
+# PassWall & OpenClash
+rm -rf package/passwall-packages package/luci-app-passwall package/luci-app-passwall2 package/luci-app-openclash 2>/dev/null || true
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git package/passwall-packages
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall.git package/luci-app-passwall
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall2.git package/luci-app-passwall2
 git clone --depth=1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
 
 # 清理 PassWall 的 chnlist 规则文件
-echo "baidu.com"  > package/luci-app-passwall/luci-app-passwall/root/usr/share/passwall/rules/chnlist
+[ -f package/luci-app-passwall/luci-app-passwall/root/usr/share/passwall/rules/chnlist ] && echo "baidu.com" > package/luci-app-passwall/luci-app-passwall/root/usr/share/passwall/rules/chnlist
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
