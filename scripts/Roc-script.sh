@@ -123,39 +123,39 @@ rm -rf package/istore
 
 ### Dockerman 容器管理 ###
 rm -rf package/luci-app-dockerman 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/luci-app-dockerman.git package/luci-app-dockerman
+git clone --depth=1 https://github.com/lisaac/luci-app-dockerman.git package/luci-app-dockerman
 [ -d package/luci-app-dockerman/luci-app-dockerman ] && mv -f package/luci-app-dockerman/luci-app-dockerman feeds/luci/applications/
 rm -rf package/luci-app-dockerman
 
-### EasyTier 网络工具 ###
-rm -rf package/luci-app-easytier 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/luci-app-easytier.git package/luci-app-easytier
-[ -d package/luci-app-easytier/luci-app-easytier ] && mv -f package/luci-app-easytier/luci-app-easytier feeds/luci/applications/
-rm -rf package/luci-app-easytier
+### 从 kenzok8/small-package 获取多个插件 ###
+rm -rf small-package 2>/dev/null || true
+git clone --depth=1 https://github.com/kenzok8/small-package.git small-package
 
-### PartExp 潘多拉插件 ###
-rm -rf package/luci-app-partexp 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/luci-app-partexp.git package/luci-app-partexp
-[ -d package/luci-app-partexp/luci-app-partexp ] && mv -f package/luci-app-partexp/luci-app-partexp feeds/luci/applications/
-rm -rf package/luci-app-partexp
+# EasyTier 网络工具
+[ -d small-package/luci-app-easytier ] && mv -f small-package/luci-app-easytier feeds/luci/applications/
+
+# PartExp 潘多拉插件
+[ -d small-package/luci-app-partexp ] && mv -f small-package/luci-app-partexp feeds/luci/applications/
+
+# Cloudflared Tunnel
+[ -d small-package/luci-app-cloudflared ] && mv -f small-package/luci-app-cloudflared feeds/luci/applications/
+
+# Tailscale VPN
+[ -d small-package/luci-app-tailscale ] && mv -f small-package/luci-app-tailscale feeds/luci/applications/
+
+# Verysync 微力同步
+[ -d small-package/net/verysync ] && mv -f small-package/net/verysync feeds/packages/net/verysync
+
+# Syncthing 文件同步
+[ -d small-package/luci-app-syncthing ] && mv -f small-package/luci-app-syncthing feeds/luci/applications/
+
+rm -rf small-package
 
 ### AdGuard Home 广告过滤 ###
 rm -rf package/luci-app-adguardhome 2>/dev/null || true
 git clone --depth=1 https://github.com/rufengsuixing/luci-app-adguardhome.git package/luci-app-adguardhome
 [ -d package/luci-app-adguardhome/luci-app-adguardhome ] && mv -f package/luci-app-adguardhome/luci-app-adguardhome feeds/luci/applications/
 rm -rf package/luci-app-adguardhome
-
-### Cloudflared Tunnel ###
-rm -rf package/luci-app-cloudflared 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/luci-app-cloudflared.git package/luci-app-cloudflared
-[ -d package/luci-app-cloudflared/luci-app-cloudflared ] && mv -f package/luci-app-cloudflared/luci-app-cloudflared feeds/luci/applications/
-rm -rf package/luci-app-cloudflared
-
-### Tailscale VPN ###
-rm -rf package/luci-app-tailscale 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/luci-app-tailscale.git package/luci-app-tailscale
-[ -d package/luci-app-tailscale/luci-app-tailscale ] && mv -f package/luci-app-tailscale/luci-app-tailscale feeds/luci/applications/
-rm -rf package/luci-app-tailscale
 
 ### CIFS 网络共享挂载 ###
 rm -rf package/luci-app-cifs 2>/dev/null || true
@@ -169,20 +169,11 @@ git clone --depth=1 https://github.com/sbwml/luci-app-quickfile.git package/luci
 [ -d package/luci-app-quickfile/luci-app-quickfile ] && mv -f package/luci-app-quickfile/luci-app-quickfile feeds/luci/applications/
 rm -rf package/luci-app-quickfile
 
-### Verysync 微力同步 ###
-rm -rf package/verysync 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/verysync.git package/verysync
-[ -d package/verysync ] && mv -f package/verysync feeds/packages/net/verysync
+### Verysync 微力同步 - luci界面 ###
 rm -rf package/luci-verysync 2>/dev/null || true
 git clone --depth=1 https://github.com/coolsnowwolf/luci.git package/luci-verysync
 [ -d package/luci-verysync/applications/luci-app-verysync ] && mv -f package/luci-verysync/applications/luci-app-verysync feeds/luci/applications/
 rm -rf package/luci-verysync
-
-### Syncthing 文件同步 ###
-rm -rf package/luci-app-syncthing 2>/dev/null || true
-git clone --depth=1 https://github.com/kenzok8/luci-app-syncthing.git package/luci-app-syncthing
-[ -d package/luci-app-syncthing/root ] && mv -f package/luci-app-syncthing/root feeds/luci/applications/luci-app-syncthing
-rm -rf package/luci-app-syncthing
 
 ### PassWall & OpenClash ###
 
