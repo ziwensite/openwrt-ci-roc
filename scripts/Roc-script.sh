@@ -140,9 +140,6 @@ git clone --depth=1 https://github.com/kenzok8/small-package.git small-package
 # Cloudflared Tunnel
 [ -d small-package/luci-app-cloudflared ] && mv -f small-package/luci-app-cloudflared feeds/luci/applications/
 
-# Tailscale VPN
-[ -d small-package/luci-app-tailscale ] && mv -f small-package/luci-app-tailscale feeds/luci/applications/
-
 # Verysync 微力同步
 [ -d small-package/net/verysync ] && mv -f small-package/net/verysync feeds/packages/net/verysync
 
