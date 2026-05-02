@@ -165,16 +165,11 @@ git clone --depth=1 https://github.com/openwrt-develop/luci-app-cifs.git package
 rm -rf package/luci-app-cifs
 
 ### Quickfile 文件管理 ###
-# 获取 quickfile 核心包
 rm -rf package/quickfile 2>/dev/null || true
-git clone --depth=1 -b quickfile https://github.com/sbwml/packages.git package/quickfile
-[ -d package/quickfile/net/quickfile ] && mv -f package/quickfile/net/quickfile feeds/packages/net/
+git clone --depth=1 https://github.com/sbwml/luci-app-quickfile.git package/quickfile
+[ -d package/quickfile/quickfile ] && mv -f package/quickfile/quickfile feeds/packages/net/quickfile
+[ -d package/quickfile/luci-app-quickfile ] && mv -f package/quickfile/luci-app-quickfile feeds/luci/applications/
 rm -rf package/quickfile
-# 获取 luci-app-quickfile
-rm -rf package/luci-app-quickfile 2>/dev/null || true
-git clone --depth=1 https://github.com/sbwml/luci-app-quickfile.git package/luci-app-quickfile
-[ -d package/luci-app-quickfile/luci-app-quickfile ] && mv -f package/luci-app-quickfile/luci-app-quickfile feeds/luci/applications/
-rm -rf package/luci-app-quickfile
 
 ### Verysync 微力同步 - luci界面 ###
 rm -rf package/luci-verysync 2>/dev/null || true
@@ -182,7 +177,6 @@ git clone --depth=1 https://github.com/coolsnowwolf/luci.git package/luci-verysy
 [ -d package/luci-verysync/applications/luci-app-verysync ] && mv -f package/luci-verysync/applications/luci-app-verysync feeds/luci/applications/
 rm -rf package/luci-verysync
 
-### PassWall & OpenClash ###
 
 # 移除 OpenWrt Feeds 自带的核心库
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls} 2>/dev/null || true
