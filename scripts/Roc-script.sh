@@ -93,6 +93,10 @@ git clone --depth=1 https://github.com/sbwml/luci-app-openlist2 package/openlist
 # Lucky
 rm -rf package/luci-app-lucky 2>/dev/null || true
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/luci-app-lucky
+# 检查是否需要单独克隆 lucky 核心程序
+if [ -d "package/luci-app-lucky/lucky" ]; then
+  mv -f package/luci-app-lucky/lucky feeds/packages/net/
+fi
 
 # Wechatpush
 rm -rf package/luci-app-wechatpush 2>/dev/null || true
@@ -142,6 +146,7 @@ git clone --depth=1 https://github.com/kenzok8/small-package.git small-package
 
 # Verysync 微力同步
 [ -d small-package/net/verysync ] && mv -f small-package/net/verysync feeds/packages/net/verysync
+[ -d small-package/luci-app-verysync ] && mv -f small-package/luci-app-verysync feeds/luci/applications/
 
 # Syncthing 文件同步
 rm -rf feeds/luci/applications/luci-app-syncthing 2>/dev/null || true
