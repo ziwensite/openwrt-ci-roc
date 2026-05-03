@@ -199,3 +199,13 @@ git clone --depth=1 https://github.com/vernesong/OpenClash.git package/luci-app-
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
+# 确保 verysync 在 feeds 安装后存在于 package 目录
+if [ -d "feeds/packages/net/verysync" ] && [ ! -d "package/verysync" ]; then
+  cp -r feeds/packages/net/verysync package/
+fi
+
+# 确保 unishare 在 feeds 安装后存在于 package 目录
+if [ -d "feeds/packages/net/unishare" ] && [ ! -d "package/unishare" ]; then
+  cp -r feeds/packages/net/unishare package/
+fi
