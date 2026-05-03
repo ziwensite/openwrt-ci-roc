@@ -200,9 +200,14 @@ git clone --depth=1 https://github.com/vernesong/OpenClash.git package/luci-app-
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-# 确保 verysync 在 feeds 安装后存在于 package 目录
-if [ -d "feeds/packages/net/verysync" ] && [ ! -d "package/verysync" ]; then
-  cp -r feeds/packages/net/verysync package/
+# 安装缺失的包 - Verysync 微力同步核心程序
+if [ ! -d "package/verysync" ]; then
+  rm -rf package/verysync 2>/dev/null || true
+  git clone --depth=1 --single-branch https://github.com/coolsnowwolf/packages.git package/verysync_tmp
+  if [ -d "package/verysync_tmp/net/verysync" ]; then
+    mv -f package/verysync_tmp/net/verysync package/verysync
+  fi
+  rm -rf package/verysync_tmp
 fi
 
 # 确保 unishare 在 feeds 安装后存在于 package 目录
