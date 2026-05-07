@@ -5,6 +5,15 @@ set -e
 sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
 sed -i "s/hostname='.*'/hostname='nas'/g" package/base-files/files/bin/config_generate
 
+# 设置默认主题为 argon
+mkdir -p package/base-files/files/etc/uci-defaults
+cat > package/base-files/files/etc/uci-defaults/99_set_theme << 'EOF'
+#!/bin/sh
+uci set luci.main.mediaurlbase=/luci-static/argon
+uci commit luci
+EOF
+chmod +x package/base-files/files/etc/uci-defaults/99_set_theme
+
 # 调整NSS驱动q6_region内存区域预留大小（ipq6018.dtsi默认预留85MB，ipq6018-512m.dtsi默认预留55MB，带WiFi必须至少预留54MB，以下分别是改成预留16MB、32MB、64MB和96MB）
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x01000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
 # sed -i 's/reg = <0x0 0x4ab00000 0x0 0x[0-9a-f]\+>/reg = <0x0 0x4ab00000 0x0 0x02000000>/' target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/ipq6018-512m.dtsi
@@ -117,13 +126,10 @@ chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led 2>/dev/null || t
 chmod +x package/luci-app-athena-led/root/usr/sbin/athena-led 2>/dev/null || true
 
 ### iStore 应用商店 ###
-rm -rf package/istore 2>/dev/null || true
-git clone --depth=1 https://github.com/linkease/istore.git package/istore
-[ -d package/istore/luci/applications/luci-app-store ] && mv -f package/istore/luci/applications/luci-app-store feeds/luci/applications/
-[ -d package/istore/luci/applications/luci-app-unishare ] && mv -f package/istore/luci/applications/luci-app-unishare feeds/luci/applications/
-[ -d package/istore/ui ] && mv -f package/istore/ui feeds/packages/net/app-store-ui
-[ -d package/istore/app-unishare ] && mv -f package/istore/app-unishare feeds/packages/net/unishare
-rm -rf package/istore
+# 使用官方推荐的 feeds 方式
+if ! grep -q "src-git istore" feeds.conf.default; then
+  echo 'src-git istore https://github.com/linkease/istore;main' >> feeds.conf.default
+fi
 
 ### Dockerman 容器管理 ###
 rm -rf package/luci-app-dockerman 2>/dev/null || true
@@ -179,7 +185,6 @@ git clone --depth=1 https://github.com/coolsnowwolf/luci.git package/luci-verysy
 [ -d package/luci-verysync/applications/luci-app-verysync ] && mv -f package/luci-verysync/applications/luci-app-verysync feeds/luci/applications/
 rm -rf package/luci-verysync
 
-
 # 移除 OpenWrt Feeds 自带的核心库
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls} 2>/dev/null || true
 
@@ -199,6 +204,9 @@ git clone --depth=1 https://github.com/vernesong/OpenClash.git package/luci-app-
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
+# 安装 istore 相关包
+./scripts/feeds install -d y -p istore luci-app-store luci-app-unishare luci-lib-taskd luci-lib-xterm
 
 # 安装缺失的包 - Verysync 微力同步核心程序
 if [ ! -d "package/verysync" ]; then
