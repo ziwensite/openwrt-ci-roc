@@ -3,7 +3,7 @@ set -e
 
 # 修改默认IP & 固件名称 & 编译署名和时间
 sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
-sed -i "s/hostname='.*'/hostname='nas'/g" package/base-files/files/bin/config_generate
+sed -i "s/hostname='.*'/hostname='op'/g" package/base-files/files/bin/config_generate
 
 # 设置默认主题为 argon
 mkdir -p package/base-files/files/etc/uci-defaults
@@ -193,8 +193,8 @@ rm -rf package/luci-verysync
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls} 2>/dev/null || true
 
 # 移除 OpenWrt Feeds 过时的LuCI版本
-rm -rf feeds/luci/applications/luci-app-passwall 2>/dev/null || true
-rm -rf feeds/luci/applications/luci-app-openclash 2>/dev/null || true
+# rm -rf feeds/luci/applications/luci-app-passwall 2>/dev/null || true
+# rm -rf feeds/luci/applications/luci-app-openclash 2>/dev/null || true
 
 # PassWall & OpenClash
 rm -rf package/passwall-packages package/luci-app-passwall package/luci-app-passwall2 package/luci-app-openclash 2>/dev/null || true
