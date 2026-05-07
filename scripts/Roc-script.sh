@@ -9,7 +9,8 @@ sed -i "s/hostname='.*'/hostname='nas'/g" package/base-files/files/bin/config_ge
 mkdir -p package/base-files/files/etc/uci-defaults
 
 # 修复 ath11k NSS 补丁与内核 6.18 不兼容的问题
-rm -f package/kernel/mac80211/patches/nss/ath11k/235-003-ath11k-add-AP_VLAN-vif-support-for-WDS-offload-in-NSS-offload.patch 2>/dev/null || true
+# rm -f package/kernel/mac80211/patches/nss/ath11k/235-003-ath11k-add-AP_VLAN-vif-support-for-WDS-offload-in-NSS-offload.patch 2>/dev/null || true
+# rm -f package/kernel/mac80211/patches/nss/ath11k/236-003-ath11k-add-dynamic-VLAN-support-in-NSS-offload.patch 2>/dev/null || true
 cat > package/base-files/files/etc/uci-defaults/99_set_theme << 'EOF'
 #!/bin/sh
 uci set luci.main.mediaurlbase=/luci-static/argon
